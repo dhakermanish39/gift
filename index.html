@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>For Anuksha 🌸</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,600&family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="cursorGlow"></div>
+
+<audio id="bgSong" src="song.mp3" loop preload="auto"></audio>
+
+<div class="top-controls">
+  <button class="icon-btn" id="musicToggle" title="Music">🔈</button>
+</div>
+
+<div class="days-badge" id="daysBadge">💫 counting our days…</div>
+
+<div id="app">
+
+  <!-- PAGE 0: Passcode Lock -->
+  <section class="page active" id="page-lock">
+    <div class="lock-notes" id="lockNotes"></div>
+    <div class="lock-wrap">
+      <div class="heart-frame">
+        <div class="ribbon-bow">🎀</div>
+        <img src="photos/main.jpg" alt="" id="lockPhoto" onerror="this.style.display='none';document.getElementById('lockPhotoFallback').style.display='flex';">
+        <div class="heart-fallback" id="lockPhotoFallback">🐾💕</div>
+      </div>
+      <p class="lock-caption script">Enter a passcode</p>
+      <div class="passcode-dots" id="passcodeDots">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+      <div class="keypad" id="keypad">
+        <button class="key" data-k="1">1</button>
+        <button class="key" data-k="2">2</button>
+        <button class="key" data-k="3">3</button>
+        <button class="key" data-k="4">4</button>
+        <button class="key" data-k="5">5</button>
+        <button class="key" data-k="6">6</button>
+        <button class="key" data-k="7">7</button>
+        <button class="key" data-k="8">8</button>
+        <button class="key" data-k="9">9</button>
+        <button class="key key-alt" data-k="*">*</button>
+        <button class="key" data-k="0">0</button>
+        <button class="key key-alt" data-k="back">⌫</button>
+      </div>
+      <p class="lock-hint" id="lockHint">💡 Hint: aap dono ki khaas date</p>
+    </div>
+  </section>
+
+  <!-- PAGE 1 -->
+  <section class="page" id="page-welcome">
+    <div class="loader-wrap" id="loaderWrap">
+      <div class="spinner-heart">💗</div>
+      <div class="loading-text">preparing something special…</div>
+    </div>
+    <div class="glass" id="welcome-content">
+      <div class="teddy-wave">🧸</div>
+      <h1 class="script">Hello Anuksha Ji 🌸❤️</h1>
+      <p class="sub">A tiny surprise is waiting for you… take your time and enjoy it 🌙</p>
+      <button class="btn" id="openSurpriseBtn">Open My Surprise 🎁</button>
+    </div>
+  </section>
+
+  <!-- PAGE 2 -->
+  <section class="page" id="page-balloons">
+    <h2 class="display" style="color:#fff;text-shadow:0 2px 10px rgba(0,0,0,0.25);">Pop a balloon 🎈</h2>
+    <p style="color:#fff;opacity:.9;margin-top:-4px;">Har balloon ke andar ek pyara sa message hai</p>
+    <div class="balloon-field" id="balloonField"></div>
+    <p class="balloon-progress" id="balloonProgress">0 / 6 popped</p>
+    <button class="btn" id="toTeddyBtn" style="display:none;margin-top:18px;">Next 🧸</button>
+  </section>
+
+  <!-- PAGE 3 -->
+  <section class="page" id="page-teddy">
+    <h2 class="display" style="color:#fff;">Can you make Teddy smile? 🧸</h2>
+    <p style="color:var(--rose-100);margin-top:-6px;">Catch 5 floating hearts to make him happy</p>
+    <div class="teddy-stage" id="teddyStage">
+      <span class="teddy-big" id="teddyEmoji">🧸</span>
+    </div>
+    <p class="heart-counter" id="heartCounter">Hearts collected: 0 / 5</p>
+  </section>
+
+  <!-- PAGE 4 -->
+  <section class="page" id="page-gift">
+    <h2 class="display" style="color:#fff;">A gift for you 🎁</h2>
+    <div style="margin:30px 0;">
+      <span class="gift-box" id="giftBox">🎁</span>
+    </div>
+    <p class="gift-hint" id="giftHint">Tap the gift box to open it</p>
+  </section>
+
+  <!-- PAGE 5: Bouquet of Reasons -->
+  <section class="page" id="page-bouquet">
+    <div class="bouquet-card">
+      <span class="bouquet-tag">♥ A LITTLE BOUQUET</span>
+      <h2 class="bouquet-title display">a bloom for every reason<br>I adore you</h2>
+      <p class="bouquet-sub script">picked just for you ♡</p>
+      <div class="bouquet-grid" id="bouquetGrid"></div>
+      <div class="bouquet-scallop"></div>
+    </div>
+    <button class="btn bouquet-cta" id="toLetterBtn">Read My Letter →</button>
+  </section>
+
+  <!-- PAGE 6 -->
+  <section class="page" id="page-letter">
+    <div class="paper">
+      <div id="letterText"></div>
+    </div>
+    <button class="btn" id="toQuizBtn" style="display:none;margin-top:26px;">Continue 💗</button>
+  </section>
+
+  <!-- PAGE 7: Love Quiz -->
+  <section class="page" id="page-quiz">
+    <div class="glass quiz-card" id="quizCard">
+      <h2 class="display" style="color:#fff;">Little Love Quiz 💘</h2>
+      <p style="color:var(--rose-100);margin-top:-6px;">Sirf maza karne ke liye 🌸</p>
+      <div id="quizBody"></div>
+    </div>
+  </section>
+
+  <!-- PAGE 8: Us in a Few Frames -->
+  <section class="page" id="page-frames">
+    <div class="frames-stack" id="framesStack">
+      <div class="frames-card frames-card-back2"></div>
+      <div class="frames-card frames-card-back1"></div>
+      <div class="frames-card frames-card-main" id="framesMain">
+        <span class="washi-tape"></span>
+        <div class="frames-tag">♥ OUR MOMENTS</div>
+        <div class="frames-header display">us, in a few frames</div>
+        <p class="frames-subhead">a handful of moments I'd relive on loop ♡</p>
+        <button class="frames-arrow frames-arrow-left" id="framesPrev">←</button>
+        <button class="frames-arrow frames-arrow-right" id="framesNext">→</button>
+        <div class="frames-image" id="framesImage"></div>
+        <div class="frames-counter" id="framesCounter">01 / 03</div>
+        <p class="frames-caption" id="framesCaption"></p>
+        <div class="frames-thumbs" id="framesThumbs"></div>
+      </div>
+    </div>
+    <button class="btn bouquet-cta" id="toGalleryBtn2">Why I Adore You →</button>
+  </section>
+
+  <!-- PAGE 9: Memory Gallery -->
+  <section class="page" id="page-gallery">
+    <h2 class="display" style="color:#fff;">Our Little Memories 📸</h2>
+    <p style="color:var(--rose-100);margin-top:-6px;max-width:440px;">Yahan aap jab chaho photos add kar sakte ho — abhi ke liye kuch pyare placeholders hain</p>
+    <div class="gallery-grid" id="galleryGrid"></div>
+    <button class="btn" id="toWishBtn" style="margin-top:24px;">Next 🌠</button>
+  </section>
+
+  <!-- PAGE 8: Falling Stars Wish -->
+  <section class="page" id="page-wish">
+    <canvas id="starsCanvas"></canvas>
+    <div class="glass wish-card" id="wishCard">
+      <h2 class="display" style="color:#fff;">Make a Wish 🌠</h2>
+      <p style="color:var(--rose-100);margin-top:-4px;">Ek tara todo aur apni wish likho</p>
+      <textarea id="wishInput" placeholder="Aapki wish yahan likhiye…" maxlength="180"></textarea>
+      <button class="btn" id="sendWishBtn">Send Wish ✨</button>
+      <p class="wish-confirm" id="wishConfirm"></p>
+    </div>
+    <button class="btn btn-ghost" id="toProposalBtn" style="margin-top:22px;">Continue 💗</button>
+  </section>
+
+  <!-- PAGE 9 -->
+  <section class="page" id="page-proposal">
+    <div class="glass prop-card">
+      <h1 class="script">Will You Be My Special Friend? 🥺</h1>
+      <div class="prop-buttons">
+        <button class="btn" id="yesBtn">❤️ Yes</button>
+        <button class="btn btn-ghost" id="noBtn">🙈 No</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 7 -->
+  <section class="page" id="page-celebrate">
+    <canvas id="fireworksCanvas"></canvas>
+    <div class="celebrate-content">
+      <div class="rose3d">🌹</div>
+      <h1 class="script">Thank You Anushka Ji ❤️</h1>
+      <span class="teddy-dance">🧸</span>
+      <p style="color:var(--rose-100);max-width:420px;">Aapne is choti si duniya ko itna khaas bana diya. Hamesha aise hi muskurate rehna 🌸</p>
+    </div>
+  </section>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
