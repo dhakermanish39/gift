@@ -1,6 +1,8 @@
 /* ==================================================
    CONFIG — edit these two lines to personalize
    ================================================== */
+
+   const SHEET_URL = "https://script.google.com/macros/s/AKfycbzLVrem7I_4Tsmnwe1MRzT0wltZNPEXYq2NBnxb4tSKHXEDeQhs6qkLjPhJUMf8Pzbe8w/exec";
 const START_DATE = '2024-01-01'; // <-- change to the date you two started talking/met (YYYY-MM-DD)
 const START_LABEL = "hum baat karte hain"; // shown after the number, e.g. "125 din se hum baat karte hain"
 const PASSCODE = '1122'; // <-- change this to any 4-digit code you want (e.g. an anniversary date like "0514")
@@ -55,6 +57,25 @@ setInterval(updateDaysBadge, 60000);
 
   function tryUnlock(){
     if(entered.length !== 4) return;
+    if (entered === PASSCODE) {
+  const lockPage = document.getElementById('page-lock');
+  lockPage.style.transition = 'opacity .6s ease, transform .6s ease';
+  lockPage.style.opacity = '0';
+  lockPage.style.transform = 'scale(1.05)';
+
+  setTimeout(() => {
+    goToPage('page-welcome');
+
+    // Music start
+    bgSong.volume = 0.5;
+    bgSong.play().catch(err => {
+      console.log("Autoplay blocked:", err);
+    });
+
+    lockPage.style.opacity = '';
+    lockPage.style.transform = '';
+  }, 600);
+}
     if(entered === PASSCODE){
       const lockPage = document.getElementById('page-lock');
       lockPage.style.transition='opacity .6s ease, transform .6s ease';
@@ -150,7 +171,7 @@ function spawnBubble(){
 setInterval(spawnBubble, 1400);
 
 /* ---------------- simple ambient music via WebAudio ---------------- */
-let audioCtx=null, musicOn=false, musicNodes=[];
+let audioCtx=null, musicOn=true, musicNodes=[];
 function startMusic(){
   if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
   if(audioCtx.state==='suspended') audioCtx.resume();
@@ -181,23 +202,14 @@ function stopMusic(){ musicOn=false; }
 const bgSong = document.getElementById('bgSong');
 let realSongAvailable = null; // null = unknown, true/false once checked
 document.getElementById('musicToggle').addEventListener('click', function(){
-  musicOn = !musicOn;
-  this.textContent = musicOn ? '🔊' : '🔈';
-  if(!musicOn){
+  if(bgSong.paused){
+    bgSong.play();
+    this.textContent = "🔊";
+  }else{
     bgSong.pause();
-    stopMusic();
-    return;
+    this.textContent = "🔈";
   }
-  // try the real song.mp3 first; if it fails to load, fall back to synthesized music
-  bgSong.volume = 0.5;
-  const playPromise = bgSong.play();
-  if(playPromise && playPromise.then){
-    playPromise.then(()=>{ realSongAvailable = true; })
-    .catch(()=>{ realSongAvailable = false; if(musicOn) startMusic(); });
-  }
-  bgSong.onerror = ()=>{ realSongAvailable = false; if(musicOn && bgSong.paused) startMusic(); };
 });
-
 /* ---------------- petals helper ---------------- */
 function spawnPetals(count, container){
   for(let k=0;k<count;k++){
@@ -455,6 +467,7 @@ const quizQuestions = [
   { q:"Agar ek gift choose karna ho?", opts:["Handwritten letter 💌","Teddy bear 🧸","Chocolates 🍫","Surprise plan 🎈"] },
 ];
 let quizIndex = 0;
+let quizAnswers = [];
 let quizStarted = false;
 function startQuiz(){
   if(quizStarted) return;
@@ -477,6 +490,7 @@ function renderQuizQuestion(){
     btn.addEventListener('click', ()=>{
       body.querySelectorAll('.quiz-opt').forEach(b=>b.classList.remove('selected'));
       btn.classList.add('selected');
+      quizAnswers[quizIndex] = btn.textContent;
       setTimeout(()=>{
         quizIndex++;
         if(quizIndex < quizQuestions.length){
@@ -724,6 +738,20 @@ function animateStars(){
 document.getElementById('sendWishBtn').addEventListener('click', ()=>{
   const input = document.getElementById('wishInput');
   const text = input.value.trim();
+  fetch(SHEET_URL, {
+    method: "POST",
+    redirect: "follow",
+    headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify({
+        q1: quizAnswers[0],
+        q2: quizAnswers[1],
+        q3: quizAnswers[2],
+        q4: quizAnswers[3],
+        wish: text
+    })
+}).catch(err => console.log(err));
   const confirm = document.getElementById('wishConfirm');
   if(!text){
     confirm.textContent = 'Pehle apni wish likhiye 🌸';
@@ -854,3 +882,18 @@ function animate(){
 
   animId = requestAnimationFrame(animate);
 }
+window.addEventListener("load", () => {
+    const bgSong = document.getElementById("bgSong");
+    bgSong.volume = 0.5;
+
+    bgSong.play().catch(() => {
+        console.log("Browser blocked autoplay.");
+    });
+});
+document.addEventListener("click", function () {
+    const bgSong = document.getElementById("bgSong");
+
+    bgSong.volume = 0.5;
+    bgSong.play();
+
+}, { once: true });
